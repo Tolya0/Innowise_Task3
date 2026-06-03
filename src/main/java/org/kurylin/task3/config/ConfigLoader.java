@@ -2,7 +2,7 @@ package org.kurylin.task3.config;
 
 import org.kurylin.task3.domain.PartType;
 import org.kurylin.task3.domain.RepairOrder;
-import org.kurylin.task3.exception.ServiceException;
+import org.kurylin.task3.exception.ConfigurationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,21 +18,21 @@ public class ConfigLoader {
 
     private ConfigLoader() {}
 
-    public static AppConfig load() {
+    public static AppConfig load() throws ConfigurationException {
         return load(DEFAULT_RESOURCE);
     }
 
-    public static AppConfig load(String resourceName) {
+    public static AppConfig load(String resourceName) throws ConfigurationException {
         Properties props = new Properties();
         try (InputStream is = ConfigLoader.class
                 .getClassLoader()
                 .getResourceAsStream(resourceName)) {
             if (is == null) {
-                throw new ServiceException("Config resource not found: " + resourceName);
+                throw new ConfigurationException("Config file not found in classpath: " + resourceName);
             }
             props.load(is);
         } catch (IOException e) {
-            throw new ServiceException("Failed to load config: " + resourceName, e);
+            throw new ConfigurationException("Failed to read config file: " + resourceName, e);
         }
 
         int boxes = Integer.parseInt(props.getProperty("boxes").trim());
@@ -75,9 +75,6 @@ public class ConfigLoader {
         Map<PartType, Integer> parts = new EnumMap<>(PartType.class);
         for (String token : orderStr.split(",")) {
             String[] kv = token.trim().split(":");
-            if (kv.length != 2) {
-                throw new ServiceException("Invalid order token: " + token);
-            }
             PartType pt = PartType.valueOf(kv[0].trim().toUpperCase());
             int qty = Integer.parseInt(kv[1].trim());
             parts.put(pt, qty);

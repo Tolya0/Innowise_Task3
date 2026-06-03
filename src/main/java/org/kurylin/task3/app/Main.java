@@ -10,6 +10,7 @@ import org.kurylin.task3.domain.PartsWarehouse;
 import org.kurylin.task3.entity.Car;
 import org.kurylin.task3.task.SupplierTask;
 
+import org.kurylin.task3.exception.ConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +21,7 @@ public class Main {
 
     private static final Logger log = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ConfigurationException {
         AppConfig config = ConfigLoader.load();
         log.info("Configuration loaded: {} boxes, {} cars",
                 config.boxes(), config.carInits().size());

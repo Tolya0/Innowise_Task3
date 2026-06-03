@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.kurylin.task3.domain.BoxPool;
 import org.kurylin.task3.domain.PartsWarehouse;
 import org.kurylin.task3.domain.RepairOrder;
-import org.kurylin.task3.exception.ServiceException;
 import org.kurylin.task3.state.CarState;
 import org.kurylin.task3.state.impl.ArrivedState;
 import org.kurylin.task3.state.impl.LeavingState;
@@ -49,8 +48,6 @@ public class Car implements Runnable {
         } catch (InterruptedException e) {
             log.error("[{}] interrupted — stopping", name);
             Thread.currentThread().interrupt();
-        } catch (ServiceException e) {
-            log.error("[{}] service error: {}", name, e.getMessage(), e);
         }
         log.info("[{}] thread finished", name);
     }
